@@ -12,6 +12,7 @@ from vnpy.event import Event, EventEngine
 from vnpy.trader.engine import BaseEngine, MainEngine
 from vnpy.trader.constant import Direction, Offset, OrderType, Interval
 from vnpy.trader.object import (
+    BaseData,
     OrderRequest,
     HistoryRequest,
     SubscribeRequest,
@@ -64,7 +65,7 @@ class ScriptEngine(BaseEngine):
 
         self.write_log("策略交易脚本启动")
 
-    def run_strategy(self, script_path: str):
+    def run_strategy(self, script_path: str) -> None:
         """加载策略脚本并调用run函数"""
         path: Path = Path(script_path)
         sys.path.append(str(path.parent))
@@ -306,7 +307,7 @@ def to_df(data_list: Sequence) -> Optional[DataFrame]:
     return DataFrame(dict_list)
 
 
-def get_data(func: callable, arg: Any = None, use_df: bool = False) -> Optional[DataFrame]:
+def get_data(func: callable, arg: Any = None, use_df: bool = False) -> BaseData:
     """"""
     if not arg:
         data = func()
