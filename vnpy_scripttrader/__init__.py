@@ -44,4 +44,4 @@ class ScriptTraderApp(BaseApp):
     display_name = "脚本策略"
     engine_class = ScriptEngine
     widget_name = "ScriptManager"
-    icon_name = "script.ico"
+    icon_name = str(app_path.joinpath("ui", "script.ico"))
