@@ -1,6 +1,7 @@
 import sys
 import importlib
 import traceback
+from types import ModuleType
 from typing import Optional, Sequence, Any, List
 from pathlib import Path
 from datetime import datetime
@@ -38,7 +39,7 @@ class ScriptEngine(BaseEngine):
     """"""
     setting_filename: str = "script_trader_setting.json"
 
-    def __init__(self, main_engine: MainEngine, event_engine: EventEngine):
+    def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """"""
         super().__init__(main_engine, event_engine, APP_NAME)
 
@@ -74,7 +75,7 @@ class ScriptEngine(BaseEngine):
         module_name: str = script_name.replace(".py", "")
 
         try:
-            module = importlib.import_module(module_name)
+            module: ModuleType = importlib.import_module(module_name)
             importlib.reload(module)
             module.run(self)
         except Exception:
@@ -320,5 +321,5 @@ def get_data(func: callable, arg: Any = None, use_df: bool = False) -> BaseData:
         return data
     else:
         if not isinstance(data, list):
-            data = [data]
+            data: list = [data]
         return to_df(data)
