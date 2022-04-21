@@ -4,21 +4,21 @@ from vnpy.event import EventEngine, Event
 from vnpy.trader.engine import MainEngine
 from vnpy.trader.ui import QtWidgets, QtCore
 from vnpy.trader.object import LogData
-from ..engine import APP_NAME, EVENT_SCRIPT_LOG
+from ..engine import APP_NAME, EVENT_SCRIPT_LOG, BaseEngine
 
 
 class ScriptManager(QtWidgets.QWidget):
     """"""
     signal_log: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
 
-    def __init__(self, main_engine: MainEngine, event_engine: EventEngine):
+    def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """"""
         super().__init__()
 
         self.main_engine: MainEngine = main_engine
         self.event_engine: EventEngine = event_engine
 
-        self.script_engine = main_engine.get_engine(APP_NAME)
+        self.script_engine: BaseEngine = main_engine.get_engine(APP_NAME)
 
         self.script_path: str = ""
 
@@ -75,7 +75,7 @@ class ScriptManager(QtWidgets.QWidget):
     def process_log_event(self, event: Event) -> None:
         """"""
         log: LogData = event.data
-        msg = f"{log.time}\t{log.msg}"
+        msg: str = f"{log.time}\t{log.msg}"
         self.log_monitor.append(msg)
 
     def start_script(self) -> None:

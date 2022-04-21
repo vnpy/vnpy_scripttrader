@@ -6,7 +6,7 @@ from vnpy.trader.gateway import BaseGateway
 from vnpy.trader.event import EVENT_LOG
 from vnpy.trader.object import LogData
 
-from .engine import ScriptEngine
+from .engine import ScriptEngine, BaseEngine
 
 
 def process_log_event(event: Event) -> None:
@@ -15,7 +15,7 @@ def process_log_event(event: Event) -> None:
     print(f"{log.time}\t{log.msg}")
 
 
-def init_cli_trading(gateways: Sequence[Type[BaseGateway]]):
+def init_cli_trading(gateways: Sequence[Type[BaseGateway]]) -> BaseEngine:
     """"""
     event_engine: EventEngine = EventEngine()
     event_engine.register(EVENT_LOG, process_log_event)
@@ -24,6 +24,6 @@ def init_cli_trading(gateways: Sequence[Type[BaseGateway]]):
     for gateway in gateways:
         main_engine.add_gateway(gateway)
 
-    script_engine = main_engine.add_engine(ScriptEngine)
+    script_engine: ScriptEngine = main_engine.add_engine(ScriptEngine)
 
     return script_engine
