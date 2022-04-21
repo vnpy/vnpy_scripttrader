@@ -24,6 +24,6 @@ def init_cli_trading(gateways: Sequence[Type[BaseGateway]]) -> BaseEngine:
     for gateway in gateways:
         main_engine.add_gateway(gateway)
 
-    script_engine: BaseEngine = main_engine.add_engine(ScriptEngine)
+    script_engine: ScriptEngine = main_engine.add_engine(ScriptEngine)
 
     return script_engine
