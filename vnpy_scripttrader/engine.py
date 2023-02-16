@@ -255,6 +255,15 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
 
+    def get_position_(self, vt_symbol: str, direction: Direction, use_df: bool = False) -> PositionData:
+        """"""
+        contract: ContractData = self.main_engine.get_contract(vt_symbol)
+        if not contract:
+            return None
+
+        vt_positionid: str = f"{contract.gateway_name}.{contract.vt_symbol}.{direction.value}"
+        return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
+
     def get_all_positions(self, use_df: bool = False) -> Sequence[PositionData]:
         """"""
         return get_data(self.main_engine.get_all_positions, use_df=use_df)
