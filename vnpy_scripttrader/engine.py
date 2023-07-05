@@ -1,6 +1,7 @@
 import sys
 import importlib
 import traceback
+from types import ModuleType
 from typing import Optional, Sequence, Any, List
 from pathlib import Path
 from datetime import datetime
@@ -29,16 +30,16 @@ from vnpy.trader.object import (
 from vnpy.trader.datafeed import BaseDatafeed, get_datafeed
 
 
-APP_NAME: str = "ScriptTrader"
+APP_NAME = "ScriptTrader"
 
-EVENT_SCRIPT_LOG: str = "eScriptLog"
+EVENT_SCRIPT_LOG = "eScriptLog"
 
 
 class ScriptEngine(BaseEngine):
     """"""
     setting_filename: str = "script_trader_setting.json"
 
-    def __init__(self, main_engine: MainEngine, event_engine: EventEngine):
+    def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """"""
         super().__init__(main_engine, event_engine, APP_NAME)
 
@@ -74,7 +75,7 @@ class ScriptEngine(BaseEngine):
         module_name: str = script_name.replace(".py", "")
 
         try:
-            module = importlib.import_module(module_name)
+            module: ModuleType = importlib.import_module(module_name)
             importlib.reload(module)
             module.run(self)
         except Exception:
@@ -185,7 +186,7 @@ class ScriptEngine(BaseEngine):
         req: CancelRequest = order.create_cancel_request()
         self.main_engine.cancel_order(req, order.gateway_name)
 
-    def get_tick(self, vt_symbol: str, use_df: bool = False) -> TickData:
+    def get_tick(self, vt_symbol: str, use_df: bool = False) -> Optional[TickData]:
         """"""
         return get_data(self.main_engine.get_tick, arg=vt_symbol, use_df=use_df)
 
@@ -193,7 +194,7 @@ class ScriptEngine(BaseEngine):
         """"""
         ticks: list = []
         for vt_symbol in vt_symbols:
-            tick: TickData = self.main_engine.get_tick(vt_symbol)
+            tick: Optional[TickData] = self.main_engine.get_tick(vt_symbol)
             ticks.append(tick)
 
         if not use_df:
@@ -201,7 +202,7 @@ class ScriptEngine(BaseEngine):
         else:
             return to_df(ticks)
 
-    def get_order(self, vt_orderid: str, use_df: bool = False) -> OrderData:
+    def get_order(self, vt_orderid: str, use_df: bool = False) -> Optional[OrderData]:
         """"""
         return get_data(self.main_engine.get_order, arg=vt_orderid, use_df=use_df)
 
@@ -209,7 +210,7 @@ class ScriptEngine(BaseEngine):
         """"""
         orders: list = []
         for vt_orderid in vt_orderids:
-            order: OrderData = self.main_engine.get_order(vt_orderid)
+            order: Optional[OrderData] = self.main_engine.get_order(vt_orderid)
             orders.append(order)
 
         if not use_df:
@@ -235,7 +236,7 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_all_active_orders, use_df=use_df)
 
-    def get_contract(self, vt_symbol, use_df: bool = False) -> ContractData:
+    def get_contract(self, vt_symbol, use_df: bool = False) -> Optional[ContractData]:
         """"""
         return get_data(self.main_engine.get_contract, arg=vt_symbol, use_df=use_df)
 
@@ -243,7 +244,7 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_all_contracts, use_df=use_df)
 
-    def get_account(self, vt_accountid: str, use_df: bool = False) -> AccountData:
+    def get_account(self, vt_accountid: str, use_df: bool = False) -> Optional[AccountData]:
         """"""
         return get_data(self.main_engine.get_account, arg=vt_accountid, use_df=use_df)
 
@@ -251,7 +252,7 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_all_accounts, use_df=use_df)
 
-    def get_position(self, vt_positionid: str, use_df: bool = False) -> PositionData:
+    def get_position(self, vt_positionid: str, use_df: bool = False) -> Optional[PositionData]:
         """"""
         return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
 
@@ -316,7 +317,7 @@ def to_df(data_list: Sequence) -> Optional[DataFrame]:
     return DataFrame(dict_list)
 
 
-def get_data(func: callable, arg: Any = None, use_df: bool = False) -> BaseData:
+def get_data(func: callable, arg: Any = None, use_df: bool = False) -> Optional[BaseData]:
     """"""
     if not arg:
         data = func()
@@ -329,5 +330,5 @@ def get_data(func: callable, arg: Any = None, use_df: bool = False) -> BaseData:
         return data
     else:
         if not isinstance(data, list):
-            data = [data]
+            data: list = [data]
         return to_df(data)
