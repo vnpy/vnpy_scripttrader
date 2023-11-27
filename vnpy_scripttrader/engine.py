@@ -313,7 +313,7 @@ def to_df(data_list: Sequence) -> Optional[DataFrame]:
     if not data_list:
         return None
 
-    dict_list: list = [data.__dict__ for data in data_list]
+    dict_list: list = [data.__dict__ for data in data_list if data]
     return DataFrame(dict_list)
 
 
