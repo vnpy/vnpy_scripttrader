@@ -9,7 +9,7 @@ from ..engine import APP_NAME, EVENT_SCRIPT_LOG, BaseEngine
 
 class ScriptManager(QtWidgets.QWidget):
     """"""
-    signal_log: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
+    signal_log: QtCore.Signal = QtCore.Signal(Event)
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """"""
