@@ -10,13 +10,13 @@ from .engine import ScriptEngine, BaseEngine
 
 
 def process_log_event(event: Event) -> None:
-    """"""
+    """打印日志输出"""
     log: LogData = event.data
     print(f"{log.time}\t{log.msg}")
 
 
 def init_cli_trading(gateways: Sequence[type[BaseGateway]]) -> BaseEngine:
-    """"""
+    """初始化命令行交易"""
     event_engine: EventEngine = EventEngine()
     event_engine.register(EVENT_LOG, process_log_event)
 
