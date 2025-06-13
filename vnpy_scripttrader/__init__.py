@@ -23,16 +23,21 @@
 
 from pathlib import Path
 
-import importlib_metadata
 from vnpy.trader.app import BaseApp
 
 from .engine import ScriptEngine, APP_NAME
 from .cli import init_cli_trading
 
-try:
-    __version__ = importlib_metadata.version("vnpy_scripttrader")
-except importlib_metadata.PackageNotFoundError:
-    __version__ = "dev"
+
+__all__ = [
+    "APP_NAME",
+    "ScriptEngine",
+    "ScriptTraderApp",
+    "init_cli_trading",
+]
+
+
+__version__ = "1.1.0"
 
 
 class ScriptTraderApp(BaseApp):
@@ -42,6 +47,6 @@ class ScriptTraderApp(BaseApp):
     app_module: str = __module__
     app_path: Path = Path(__file__).parent
     display_name: str = "脚本策略"
-    engine_class: ScriptEngine = ScriptEngine
+    engine_class: type[ScriptEngine] = ScriptEngine
     widget_name: str = "ScriptManager"
     icon_name: str = str(app_path.joinpath("ui", "script.ico"))

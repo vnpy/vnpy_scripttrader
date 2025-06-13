@@ -93,7 +93,7 @@ class ScriptManager(QtWidgets.QWidget):
 
         path, type_ = QtWidgets.QFileDialog.getOpenFileName(
             self,
-            u"载入策略脚本",
+            "载入策略脚本",
             cwd,
             "Python File(*.py)"
         )
