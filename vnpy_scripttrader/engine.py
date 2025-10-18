@@ -12,7 +12,7 @@ from threading import Thread
 from pandas import DataFrame
 
 from vnpy.event import Event, EventEngine
-from vnpy.trader.engine import BaseEngine, MainEngine
+from vnpy.trader.engine import BaseEngine, MainEngine, LogEngine
 from vnpy.trader.constant import Direction, Offset, OrderType, Interval
 from vnpy.trader.object import (
     BaseData,
@@ -49,6 +49,9 @@ class ScriptEngine(BaseEngine):
         self.strategy_thread: Thread | None = None
 
         self.datafeed: BaseDatafeed = get_datafeed()
+
+        log_engine: LogEngine = self.main_engine.get_engine("log")
+        log_engine.register_log(EVENT_SCRIPT_LOG)
 
     def init(self) -> None:
         """启动策略引擎"""
