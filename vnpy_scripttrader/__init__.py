@@ -37,7 +37,7 @@ __all__ = [
 ]
 
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 
 class ScriptTraderApp(BaseApp):
