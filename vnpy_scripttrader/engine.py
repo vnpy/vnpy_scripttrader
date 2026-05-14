@@ -308,10 +308,12 @@ class ScriptEngine(BaseEngine):
         event: Event = Event(EVENT_SCRIPT_LOG, log)
         self.event_engine.put(event)
 
-    def send_email(self, msg: str) -> None:
+    def send_notification(self, msg: str) -> None:
         """"""
         subject: str = "脚本策略引擎通知"
-        self.main_engine.send_email(subject, msg)
+        self.main_engine.send_notification(msg, subject)
+
+    send_email = send_notification
 
 
 def to_df(data_list: Sequence[BaseData]) -> DataFrame | None:
