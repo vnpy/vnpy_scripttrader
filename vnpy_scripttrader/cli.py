@@ -1,3 +1,4 @@
+"""脚本交易的命令行初始化。"""
 from collections.abc import Sequence
 
 from vnpy.event import EventEngine, Event

@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""脚本策略应用包。"""
 
 
 from pathlib import Path
@@ -41,7 +42,7 @@ __version__ = "1.2.0"
 
 
 class ScriptTraderApp(BaseApp):
-    """"""
+    """脚本策略应用。"""
 
     app_name: str = APP_NAME
     app_module: str = __module__
