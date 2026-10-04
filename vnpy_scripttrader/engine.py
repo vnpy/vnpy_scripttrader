@@ -3,7 +3,7 @@ import sys
 import importlib
 import traceback
 from types import ModuleType
-from typing import Any
+from typing import Any, cast
 from collections.abc import Callable
 from collections.abc import Sequence
 from pathlib import Path
@@ -51,7 +51,7 @@ class ScriptEngine(BaseEngine):
 
         self.datafeed: BaseDatafeed = get_datafeed()
 
-        log_engine: LogEngine = self.main_engine.get_engine("log")
+        log_engine: LogEngine = cast(LogEngine, self.main_engine.get_engine("log"))
         log_engine.register_log(EVENT_SCRIPT_LOG)
 
     def init(self) -> None:
@@ -194,7 +194,7 @@ class ScriptEngine(BaseEngine):
 
     def get_tick(self, vt_symbol: str, use_df: bool = False) -> TickData | None:
         """查询单条行情，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_tick, arg=vt_symbol, use_df=use_df)
+        return cast(TickData | None, get_data(self.main_engine.get_tick, arg=vt_symbol, use_df=use_df))
 
     def get_ticks(self, vt_symbols: Sequence[str], use_df: bool = False) -> Sequence[TickData] | DataFrame | None:
         """逐个查询行情，use_df 为真时转成 DataFrame。"""
@@ -210,7 +210,7 @@ class ScriptEngine(BaseEngine):
 
     def get_order(self, vt_orderid: str, use_df: bool = False) -> OrderData | None:
         """查询单笔委托，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_order, arg=vt_orderid, use_df=use_df)
+        return cast(OrderData | None, get_data(self.main_engine.get_order, arg=vt_orderid, use_df=use_df))
 
     def get_orders(self, vt_orderids: Sequence[str], use_df: bool = False) -> Sequence[OrderData] | DataFrame | None:
         """逐个查询委托，use_df 为真时转成 DataFrame。"""
@@ -240,40 +240,52 @@ class ScriptEngine(BaseEngine):
 
     def get_all_active_orders(self, use_df: bool = False) -> Sequence[OrderData] | DataFrame | None:
         """查询全部活动委托，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_all_active_orders, use_df=use_df)
+        return cast(
+            Sequence[OrderData] | DataFrame | None,
+            get_data(self.main_engine.get_all_active_orders, use_df=use_df)
+        )
 
     def get_contract(self, vt_symbol: str, use_df: bool = False) -> ContractData | None:
         """查询合约，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_contract, arg=vt_symbol, use_df=use_df)
+        return cast(ContractData | None, get_data(self.main_engine.get_contract, arg=vt_symbol, use_df=use_df))
 
     def get_all_contracts(self, use_df: bool = False) -> Sequence[ContractData] | DataFrame | None:
         """查询全部合约，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_all_contracts, use_df=use_df)
+        return cast(
+            Sequence[ContractData] | DataFrame | None,
+            get_data(self.main_engine.get_all_contracts, use_df=use_df)
+        )
 
     def get_account(self, vt_accountid: str, use_df: bool = False) -> AccountData | None:
         """查询资金账户，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_account, arg=vt_accountid, use_df=use_df)
+        return cast(AccountData | None, get_data(self.main_engine.get_account, arg=vt_accountid, use_df=use_df))
 
     def get_all_accounts(self, use_df: bool = False) -> Sequence[AccountData] | DataFrame | None:
         """查询全部资金账户，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_all_accounts, use_df=use_df)
+        return cast(
+            Sequence[AccountData] | DataFrame | None,
+            get_data(self.main_engine.get_all_accounts, use_df=use_df)
+        )
 
     def get_position(self, vt_positionid: str, use_df: bool = False) -> PositionData | None:
         """按持仓编号查询持仓，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
+        return cast(PositionData | None, get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df))
 
     def get_position_by_symbol(self, vt_symbol: str, direction: Direction, use_df: bool = False) -> PositionData | None:
         """找不到合约时返回 None，否则按接口、合约和方向拼持仓编号再查询。"""
-        contract: ContractData = self.main_engine.get_contract(vt_symbol)
+        contract: ContractData | None = self.main_engine.get_contract(vt_symbol)
         if not contract:
             return None
 
         vt_positionid: str = f"{contract.gateway_name}.{contract.vt_symbol}.{direction.value}"
-        return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
+        return cast(PositionData | None, get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df))
 
     def get_all_positions(self, use_df: bool = False) -> Sequence[PositionData] | DataFrame | None:
         """查询全部持仓，use_df 为真时转成 DataFrame。"""
-        return get_data(self.main_engine.get_all_positions, use_df=use_df)
+        return cast(
+            Sequence[PositionData] | DataFrame | None,
+            get_data(self.main_engine.get_all_positions, use_df=use_df)
+        )
 
     def get_bars(
         self,
@@ -281,7 +293,7 @@ class ScriptEngine(BaseEngine):
         start_date: str,
         interval: Interval,
         use_df: bool = False
-    ) -> Sequence[BarData]:
+    ) -> Sequence[BarData] | DataFrame:
         """找不到合约时返回空列表，否则向数据服务查询从起始日期到当前的 K 线。"""
         contract: ContractData | None = self.main_engine.get_contract(vt_symbol)
         if not contract:

@@ -1,11 +1,12 @@
 """脚本策略管理界面。"""
 from pathlib import Path
+from typing import cast
 
 from vnpy.event import EventEngine, Event
 from vnpy.trader.engine import MainEngine
 from vnpy.trader.ui import QtWidgets, QtCore
 from vnpy.trader.object import LogData
-from ..engine import APP_NAME, EVENT_SCRIPT_LOG, BaseEngine
+from ..engine import APP_NAME, EVENT_SCRIPT_LOG, ScriptEngine
 
 
 class ScriptManager(QtWidgets.QWidget):
@@ -19,7 +20,7 @@ class ScriptManager(QtWidgets.QWidget):
         self.main_engine: MainEngine = main_engine
         self.event_engine: EventEngine = event_engine
 
-        self.script_engine: BaseEngine = main_engine.get_engine(APP_NAME)
+        self.script_engine: ScriptEngine = cast(ScriptEngine, main_engine.get_engine(APP_NAME))
 
         self.script_path: str = ""
 
