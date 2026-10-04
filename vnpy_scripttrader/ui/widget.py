@@ -93,6 +93,8 @@ class ScriptManager(QtWidgets.QWidget):
         """选择 Python 脚本并显示其路径。"""
         cwd: str = str(Path.cwd())
 
+        path: str
+        type_: str
         path, type_ = QtWidgets.QFileDialog.getOpenFileName(
             self,
             "载入策略脚本",

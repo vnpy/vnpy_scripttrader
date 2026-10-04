@@ -22,6 +22,7 @@ def init_cli_trading(gateways: Sequence[type[BaseGateway]]) -> BaseEngine:
     event_engine.register(EVENT_LOG, process_log_event)
 
     main_engine: MainEngine = MainEngine(event_engine)
+    gateway: type[BaseGateway]
     for gateway in gateways:
         main_engine.add_gateway(gateway)
 

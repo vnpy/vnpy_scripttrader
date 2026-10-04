@@ -33,9 +33,9 @@ from vnpy.trader.object import (
 from vnpy.trader.datafeed import BaseDatafeed, get_datafeed
 
 
-APP_NAME = "ScriptTrader"
+APP_NAME: str = "ScriptTrader"
 
-EVENT_SCRIPT_LOG = "eScriptLog"
+EVENT_SCRIPT_LOG: str = "eScriptLog"
 
 
 class ScriptEngine(BaseEngine):
@@ -134,6 +134,7 @@ class ScriptEngine(BaseEngine):
 
     def subscribe(self, vt_symbols: Sequence[str]) -> None:
         """对能找到合约的本地代码逐个订阅行情。"""
+        vt_symbol: str
         for vt_symbol in vt_symbols:
             contract: ContractData | None = self.main_engine.get_contract(vt_symbol)
             if contract:
@@ -199,6 +200,7 @@ class ScriptEngine(BaseEngine):
     def get_ticks(self, vt_symbols: Sequence[str], use_df: bool = False) -> Sequence[TickData] | DataFrame | None:
         """逐个查询行情，use_df 为真时转成 DataFrame。"""
         ticks: list = []
+        vt_symbol: str
         for vt_symbol in vt_symbols:
             tick: TickData | None = self.main_engine.get_tick(vt_symbol)
             ticks.append(tick)
@@ -215,6 +217,7 @@ class ScriptEngine(BaseEngine):
     def get_orders(self, vt_orderids: Sequence[str], use_df: bool = False) -> Sequence[OrderData] | DataFrame | None:
         """逐个查询委托，use_df 为真时转成 DataFrame。"""
         orders: list = []
+        vt_orderid: str
         for vt_orderid in vt_orderids:
             order: OrderData | None = self.main_engine.get_order(vt_orderid)
             orders.append(order)
@@ -229,6 +232,7 @@ class ScriptEngine(BaseEngine):
         trades: list = []
         all_trades: list[TradeData] = self.main_engine.get_all_trades()
 
+        trade: TradeData
         for trade in all_trades:
             if trade.vt_orderid == vt_orderid:
                 trades.append(trade)
@@ -326,7 +330,7 @@ class ScriptEngine(BaseEngine):
         subject: str = "脚本策略引擎通知"
         self.main_engine.send_notification(msg, subject)
 
-    send_email = send_notification
+    send_email: Callable[["ScriptEngine", str], None] = send_notification
 
 
 def to_df(data_list: Sequence[BaseData]) -> DataFrame | None:
@@ -341,7 +345,8 @@ def to_df(data_list: Sequence[BaseData]) -> DataFrame | None:
 def get_data(func: Callable, arg: Any = None, use_df: bool = False) -> Any:
     """arg 为空时直接调用函数，否则传入 arg；use_df 为真时把结果转成 DataFrame。"""
     if not arg:
-        data = func()
+        # 调用目标不固定，返回值没有单一类型。
+        data: Any = func()
     else:
         data = func(arg)
 
