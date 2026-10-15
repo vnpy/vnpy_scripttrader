@@ -60,6 +60,10 @@ class ScriptEngine(BaseEngine):
         if result:
             self.write_log("数据服务初始化成功")
 
+    def close(self) -> None:
+        """关闭引擎时停止脚本并等待策略线程退出。"""
+        self.stop_strategy()
+
     def start_strategy(self, script_path: str) -> None:
         """运行策略线程中的策略方法"""
         if self.strategy_active:
